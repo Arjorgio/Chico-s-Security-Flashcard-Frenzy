@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chico's Security+ Flashcard Frenzy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Fredoka One', cursive;
+      background: linear-gradient(135deg, #fff8dc, #ffe4b5, #ffd54f);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    header {
+      background: linear-gradient(45deg, #fdd835, #ffb300);
+      width: 100%;
+      padding: 1.5rem;
+      text-align: center;
+      font-size: 2.2rem;
+      color: #4e342e;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    
+    .category-selector {
+      margin: 1rem 0;
+      text-align: center;
+    }
+    
+    .category-selector label {
+      font-size: 1.2rem;
+      color: #4e342e;
+      margin-right: 1rem;
+    }
+    
+    .category-selector select {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      border: 2px solid #ff9800;
+      border-radius: 10px;
+      background: white;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin: 1rem 0;
+      font-size: 1.1rem;
+      color: #6d4c41;
+    }
+    
+    .stat-box {
+      background: rgba(255, 255, 255, 0.8);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      border: 2px solid #ff9800;
+    }
+
+    #flashcard {
+      background: linear-gradient(145deg, #ffffff, #f5f5f5);
+      border: 4px solid #ff9800;
+      border-radius: 20px;
+      padding: 2.5rem;
+      margin: 1rem;
+      width: 90%;
+      max-width: 600px;
+      text-align: center;
+      box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    #flashcard::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, #ff9800, #fdd835, #ff5722, #4caf50);
+      border-radius: 20px;
+      z-index: -1;
+      animation: borderGlow 3s linear infinite;
+    }
+    
+    @keyframes borderGlow {
+      0% { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
+
+    #question {
+      font-size: 1.6rem;
+      margin-bottom: 1.5rem;
+      color: #2e7d32;
+      line-height: 1.4;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .input-container {
+      margin: 1rem 0;
+    }
+    
+    input[type="text"] {
+      padding: 0.8rem;
+      font-size: 1.2rem;
+      width: 80%;
+      max-width: 400px;
+      border-radius: 12px;
+      border: 3px solid #ff9800;
+      text-align: center;
+      font-family: inherit;
+      transition: all 0.3s ease;
+    }
+    
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #4caf50;
+      box-shadow: 0 0 15px rgba(76, 175, 80, 0.3);
+      transform: scale(1.05);
+    }
+    
+    .button-container {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    
+    button {
+      padding: 0.8rem 2rem;
+      font-size: 1.1rem;
+      background: linear-gradient(45deg, #ff9800, #ff5722);
+      color: white;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    #skipBtn {
+      background: linear-gradient(45deg, #9e9e9e, #607d8b);
+    }
+
+    #feedback {
+      margin-top: 1.5rem;
+      font-size: 1.4rem;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    
+    .correct {
+      color: #4caf50;
+      animation: bounce 0.6s ease;
+    }
+    
+    .incorrect {
+      color: #f44336;
+      animation: shake 0.6s ease;
+    }
+    
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-10px); }
+      60% { transform: translateY(-5px); }
+    }
+
+    #chico {
+      font-size: 8rem;
+      margin: 1rem;
+      transition: all 0.5s ease;
+      filter: drop-shadow(4px 4px 8px rgba(0,0,0,0.3));
+      cursor: pointer;
+    }
+    
+    .flap {
+      animation: flap 0.8s ease;
+    }
+    
+    .shake {
+      animation: shake 0.6s ease;
+    }
+    
+    .dance {
+      animation: dance 1s ease infinite;
+    }
+    
+    @keyframes flap {
+      0%, 100% { transform: rotate(0deg) scale(1); }
+      25% { transform: rotate(-10deg) scale(1.1); }
+      50% { transform: rotate(10deg) scale(1.2); }
+      75% { transform: rotate(-5deg) scale(1.1); }
+    }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0) rotate(0deg); }
+      10% { transform: translateX(-10px) rotate(-5deg); }
+      20% { transform: translateX(10px) rotate(5deg); }
+      30% { transform: translateX(-10px) rotate(-5deg); }
+      40% { transform: translateX(10px) rotate(5deg); }
+      50% { transform: translateX(-10px) rotate(-5deg); }
+      60% { transform: translateX(10px) rotate(5deg); }
+      70% { transform: translateX(-10px) rotate(-5deg); }
+      80% { transform: translateX(10px) rotate(5deg); }
+      90% { transform: translateX(-10px) rotate(-5deg); }
+    }
+    
+    @keyframes dance {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(5deg) scale(1.05); }
+      75% { transform: rotate(-5deg) scale(1.05); }
+    }
+    
+    .progress-bar {
+      width: 90%;
+      max-width: 600px;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 5px;
+      margin: 1rem 0;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4caf50, #8bc34a);
+      border-radius: 5px;
+      transition: width 0.5s ease;
+    }
+    
+    .celebration {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 6rem;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1000;
+    }
+    
+    .celebrate {
+      animation: celebrate 1s ease;
+    }
+    
+    @keyframes celebrate {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5) rotate(0deg); }
+      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2) rotate(180deg); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(1) rotate(360deg); }
+    }
+
+    @media (max-width: 600px) {
+      header {
+        font-size: 1.8rem;
+        padding: 1rem;
+      }
+      
+      #question {
+        font-size: 1.3rem;
+      }
+      
+      #chico {
+        font-size: 6rem;
+      }
+      
+      .stats {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>🐔 Chico's Security+ Flashcard Frenzy</header>
+  
+  <div class="category-selector">
+    <label for="categorySelect">Choose Category:</label>
+    <select id="categorySelect" onchange="changeCategory()">
+      <option value="all">All Categories (Shuffle Mode)</option>
+      <option value="ports">Ports & Protocols</option>
+      <option value="acronyms">Security+ Acronyms</option>
+      <option value="threats">Threat Types & Attacks</option>
+      <option value="encryption">Encryption & Cryptography</option>
+      <option value="authentication">Authentication & Access Control</option>
+      <option value="network">Network Security</option>
+      <option value="compliance">Compliance & Governance</option>
+    </select>
+  </div>
+
+  <div class="stats">
+    <div class="stat-box">Score: <span id="score">0</span>/<span id="total">0</span></div>
+    <div class="stat-box">Streak: <span id="streak">0</span> 🔥</div>
+    <div class="stat-box">Card: <span id="cardNum">1</span>/<span id="totalCards">50</span></div>
+    <div class="stat-box">Category: <span id="currentCategory">All</span></div>
+  </div>
+  
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+
+  <div id="flashcard">
+    <div id="question">Loading your first question...</div>
+    <div class="input-container">
+      <input type="text" id="userAnswer" placeholder="Type your answer here..." />
+    </div>
+    <div class="button-container">
+      <button onclick="checkAnswer()">Submit Answer</button>
+      <button id="skipBtn" onclick="skipCard()">Skip Card</button>
+    </div>
+    <div id="feedback"></div>
+  </div>
+
+  <div id="chico" onclick="danceChico()">🐔</div>
+  
+  <div class="celebration" id="celebration">🎉</div>
+
+  <script>
+    const allFlashcards = {
+      ports: [
+        { question: "What port does HTTPS use?", answer: "443" },
+        { question: "Which protocol uses port 22?", answer: "SSH" },
+        { question: "What is the default port for LDAP?", answer: "389" },
+        { question: "What port does DNS use?", answer: "53" },
+        { question: "Which port is used for SMTP?", answer: "25" },
+        { question: "What is the default port for POP3?", answer: "110" },
+        { question: "Which port does IMAP use?", answer: "143" },
+        { question: "What port is used for SNMP?", answer: "161" },
+        { question: "Which port does FTP use for control?", answer: "21" },
+        { question: "What port does DHCP server use?", answer: "67" },
+        { question: "Which port does secure LDAP use?", answer: "636" },
+        { question: "What port does Kerberos use?", answer: "88" },
+        { question: "Which port does FTPS use?", answer: "990" },
+        { question: "What port does secure POP3 use?", answer: "995" },
+        { question: "What port does secure IMAP use?", answer: "993" },
+        { question: "Which port does HTTP use?", answer: "80" },
+        { question: "What port does Telnet use?", answer: "23" },
+        { question: "Which port does TFTP use?", answer: "69" },
+        { question: "What port does NetBIOS use?", answer: "139" },
+        { question: "Which port does RDP use?", answer: "3389" }
+      ],
+      
+      acronyms: [
+        { question: "What does PKI stand for?", answer: "Public Key Infrastructure" },
+        { question: "What does CIA stand for in security?", answer: "Confidentiality Integrity Availability" },
+        { question: "What does VPN stand for?", answer: "Virtual Private Network" },
+        { question: "What does RBAC stand for?", answer: "Role Based Access Control" },
+        { question: "What does IDS stand for?", answer: "Intrusion Detection System" },
+        { question: "What does MFA stand for?", answer: "Multi Factor Authentication" },
+        { question: "What does SIEM stand for?", answer: "Security Information Event Management" },
+        { question: "What does NAT stand for?", answer: "Network Address Translation" },
+        { question: "What does FISMA stand for?", answer: "Federal Information Security Management Act" },
+        { question: "What does CASB stand for?", answer: "Cloud Access Security Broker" },
+        { question: "What does SCAP stand for?", answer: "Security Content Automation Protocol" },
+        { question: "What does RTO stand for?", answer: "Recovery Time Objective" },
+        { question: "What does RPO stand for?", answer: "Recovery Point Objective" },
+        { question: "What does SOC stand for?", answer: "Security Operations Center" },
+        { question: "What does NIST stand for?", answer: "National Institute of Standards and Technology" },
+        { question: "What does HIPAA stand for?", answer: "Health Insurance Portability and Accountability Act" },
+        { question: "What does SOX stand for?", answer: "Sarbanes Oxley Act" },
+        { question: "What does PCI DSS stand for?", answer: "Payment Card Industry Data Security Standard" },
+        { question: "What does GDPR stand for?", answer: "General Data Protection Regulation" },
+        { question: "What does BCP stand for?", answer: "Business Continuity Plan" },
+        { question: "What does DRP stand for?", answer: "Disaster Recovery Plan" },
+        { question: "What does MTBF stand for?", answer: "Mean Time Between Failures" },
+        { question: "What does MTTR stand for?", answer: "Mean Time To Repair" },
+        { question: "What does SLA stand for?", answer: "Service Level Agreement" },
+        { question: "What does HSM stand for?", answer: "Hardware Security Module" }
+      ],
+      
+      threats: [
+        { question: "Which attack targets the human element?", answer: "Social Engineering" },
+        { question: "What is a zero-day exploit?", answer: "Unknown vulnerability exploit" },
+        { question: "Which attack floods a network with traffic?", answer: "DDoS" },
+        { question: "Which attack intercepts communications?", answer: "Man in the Middle" },
+        { question: "Which attack targets password files?", answer: "Dictionary attack" },
+        { question: "Which attack uses malicious code in web forms?", answer: "SQL injection" },
+        { question: "Which attack targets application vulnerabilities?", answer: "XSS" },
+        { question: "What type of malware encrypts files for ransom?", answer: "Ransomware" },
+        { question: "What is a botnet?", answer: "Network of infected computers" },
+        { question: "Which attack uses fake emails to steal credentials?", answer: "Phishing" },
+        { question: "What is spear phishing?", answer: "Targeted phishing attack" },
+        { question: "Which attack targets specific high-value individuals?", answer: "Whaling" },
+        { question: "What is vishing?", answer: "Voice phishing" },
+        { question: "What is smishing?", answer: "SMS phishing" },
+        { question: "Which attack involves following authorized personnel?", answer: "Tailgating" },
+        { question: "What is shoulder surfing?", answer: "Observing sensitive information" },
+        { question: "Which attack uses malicious USB devices?", answer: "USB drop attack" },
+        { question: "What is a watering hole attack?", answer: "Compromising frequently visited websites" },
+        { question: "Which attack targets supply chain vulnerabilities?", answer: "Supply chain attack" },
+        { question: "What is typosquatting?", answer: "Using misspelled domain names" },
+        { question: "Which attack exploits human trust and authority?", answer: "Pretexting" },
+        { question: "What is a logic bomb?", answer: "Malicious code triggered by conditions" },
+        { question: "Which attack involves fake wireless access points?", answer: "Evil twin" },
+        { question: "What is session hijacking?", answer: "Stealing active user sessions" },
+        { question: "Which attack exploits buffer overflow vulnerabilities?", answer: "Buffer overflow attack" }
+      ],
+      
+      encryption: [
+        { question: "Which encryption standard replaced DES?", answer: "AES" },
+        { question: "Which hash algorithm produces a 256-bit digest?", answer: "SHA-256" },
+        { question: "Which cipher is considered symmetric?", answer: "AES" },
+        { question: "Which algorithm is used for digital signatures?", answer: "RSA" },
+        { question: "Which protocol secures HTTP traffic?", answer: "TLS" },
+        { question: "What is the secure version of Telnet?", answer: "SSH" },
+        { question: "Which protocol provides secure email?", answer: "S/MIME" },
+        { question: "What is the key size of AES-256?", answer: "256 bits" },
+        { question: "Which hashing algorithm is considered broken?", answer: "MD5" },
+        { question: "What does PGP stand for?", answer: "Pretty Good Privacy" },
+        { question: "Which encryption is faster: symmetric or asymmetric?", answer: "Symmetric" },
+        { question: "What is a digital certificate?", answer: "Electronic credential" },
+        { question: "Which protocol replaced SSL?", answer: "TLS" },
+        { question: "What is perfect forward secrecy?", answer: "Session key independence" },
+        { question: "Which cipher mode provides authentication?", answer: "GCM" },
+        { question: "What is a rainbow table?", answer: "Precomputed hash lookup table" },
+        { question: "Which key exchange algorithm is quantum-resistant?", answer: "Post-quantum cryptography" },
+        { question: "What is key escrow?", answer: "Third-party key storage" },
+        { question: "Which algorithm is used in Diffie-Hellman?", answer: "Discrete logarithm" },
+        { question: "What is steganography?", answer: "Hiding data in other data" }
+      ],
+      
+      authentication: [
+        { question: "Which authentication method uses something you are?", answer: "Biometric" },
+        { question: "What are the three authentication factors?", answer: "Something you know have are" },
+        { question: "What is single sign-on?", answer: "One login for multiple systems" },
+        { question: "Which protocol is used for web-based SSO?", answer: "SAML" },
+        { question: "What is OAuth used for?", answer: "Authorization framework" },
+        { question: "Which authentication uses time-based tokens?", answer: "TOTP" },
+        { question: "What is LDAP used for?", answer: "Directory services" },
+        { question: "Which Windows authentication uses tickets?", answer: "Kerberos" },
+        { question: "What is the principle of least privilege?", answer: "Minimum necessary access" },
+        { question: "Which access control model uses labels?", answer: "MAC" },
+        { question: "What is DAC?", answer: "Discretionary Access Control" },
+        { question: "Which model assigns permissions based on job function?", answer: "RBAC" },
+        { question: "What is ABAC?", answer: "Attribute Based Access Control" },
+        { question: "Which authentication factor is a password?", answer: "Something you know" },
+        { question: "What is a security token?", answer: "Hardware authentication device" },
+        { question: "Which biometric has the lowest FAR?", answer: "Iris recognition" },
+        { question: "What is account lockout?", answer: "Disabling account after failed attempts" },
+        { question: "Which protocol provides centralized authentication?", answer: "RADIUS" },
+        { question: "What is federation in identity management?", answer: "Trusted identity relationships" },
+        { question: "Which standard defines identity federation?", answer: "SAML" }
+      ],
+      
+      network: [
+        { question: "What is the strongest wireless security protocol?", answer: "WPA3" },
+        { question: "What is a honeypot?", answer: "Decoy system" },
+        { question: "What is defense in depth?", answer: "Layered security approach" },
+        { question: "What is the purpose of a DMZ?", answer: "Buffer zone between networks" },
+        { question: "What is network segmentation?", answer: "Dividing networks into segments" },
+        { question: "Which device filters traffic between networks?", answer: "Firewall" },
+        { question: "What is an intrusion prevention system?", answer: "IPS" },
+        { question: "Which protocol is used for secure VPN tunnels?", answer: "IPSec" },
+        { question: "What is a VLAN?", answer: "Virtual Local Area Network" },
+        { question: "Which attack targets ARP tables?", answer: "ARP poisoning" },
+        { question: "What is port security?", answer: "Limiting MAC addresses per port" },
+        { question: "Which protocol prevents switching loops?", answer: "STP" },
+        { question: "What is a jump server?", answer: "Secure access point" },
+        { question: "Which tool performs network discovery?", answer: "Nmap" },
+        { question: "What is network access control?", answer: "NAC" },
+        { question: "Which protocol provides network time?", answer: "NTP" },
+        { question: "What is a security zone?", answer: "Network security boundary" },
+        { question: "Which device provides wireless security?", answer: "WAP" },
+        { question: "What is 802.1X?", answer: "Port-based network access control" },
+        { question: "Which protocol secures SNMP?", answer: "SNMPv3" }
+      ],
+      
+      compliance: [
+        { question: "Which backup type only saves changed files?", answer: "Incremental" },
+        { question: "What is a risk assessment?", answer: "Evaluation of potential threats" },
+        { question: "Which framework provides security controls?", answer: "NIST" },
+        { question: "What is due diligence?", answer: "Reasonable care and investigation" },
+        { question: "Which audit examines financial controls?", answer: "SOX audit" },
+        { question: "What is data classification?", answer: "Categorizing information by sensitivity" },
+        { question: "Which regulation protects health information?", answer: "HIPAA" },
+        { question: "What is a security policy?", answer: "High-level security rules" },
+        { question: "Which document provides detailed procedures?", answer: "Standard Operating Procedure" },
+        { question: "What is risk mitigation?", answer: "Reducing risk to acceptable levels" },
+        { question: "Which process validates security controls?", answer: "Security audit" },
+        { question: "What is change management?", answer: "Controlled modification process" },
+        { question: "Which agreement defines service expectations?", answer: "SLA" },
+        { question: "What is data retention?", answer: "Policy for keeping information" },
+        { question: "Which process removes sensitive data?", answer: "Data sanitization" },
+        { question: "What is a privacy impact assessment?", answer: "PIA" },
+        { question: "Which law regulates financial data?", answer: "SOX" },
+        { question: "What is quantitative risk analysis?", answer: "Numerical risk calculation" },
+        { question: "Which standard covers payment card security?", answer: "PCI DSS" },
+        { question: "What is business impact analysis?", answer: "BIA" }
+      ]
+    };
+
+    let flashcards = [];
+    let currentCategory = 'all';
+
+    let currentCard = 0;
+    let score = 0;
+    let streak = 0;
+    let totalAttempts = 0;
+    let answered = false;
+
+    // Shuffle the flashcards array
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function changeCategory() {
+      const selectedCategory = document.getElementById('categorySelect').value;
+      currentCategory = selectedCategory;
+      
+      if (selectedCategory === 'all') {
+        // Combine all categories
+        flashcards = [];
+        Object.values(allFlashcards).forEach(categoryCards => {
+          flashcards = flashcards.concat(categoryCards);
+        });
+      } else {
+        flashcards = [...allFlashcards[selectedCategory]];
+      }
+      
+      shuffleArray(flashcards);
+      resetGame();
+    }
+
+    function resetGame() {
+      currentCard = 0;
+      score = 0;
+      streak = 0;
+      totalAttempts = 0;
+      answered = false;
+      updateStats();
+      loadCard();
+    }
+
+    function initGame() {
+      changeCategory(); // This will set up the initial flashcards
+    }
+
+    function updateStats() {
+      document.getElementById('score').textContent = score;
+      document.getElementById('total').textContent = totalAttempts;
+      document.getElementById('streak').textContent = streak;
+      document.getElementById('cardNum').textContent = currentCard + 1;
+      document.getElementById('totalCards').textContent = flashcards.length;
+      
+      // Update category display
+      const categoryNames = {
+        'all': 'All Categories',
+        'ports': 'Ports & Protocols',
+        'acronyms': 'Security+ Acronyms',
+        'threats': 'Threat Types',
+        'encryption': 'Encryption',
+        'authentication': 'Authentication',
+        'network': 'Network Security',
+        'compliance': 'Compliance'
+      };
+      document.getElementById('currentCategory').textContent = categoryNames[currentCategory];
+      
+      const progress = ((currentCard) / flashcards.length) * 100;
+      document.getElementById('progressFill').style.width = progress + '%';
+    }
+
+    function checkAnswerVariations(userAnswer, correctAnswer) {
+      const variations = {
+        "aes": ["advanced encryption standard"],
+        "ssh": ["secure shell"],
+        "tls": ["transport layer security"],
+        "ssl": ["secure sockets layer"],
+        "vpn": ["virtual private network"],
+        "pki": ["public key infrastructure"],
+        "cia": ["confidentiality integrity availability"],
+        "rbac": ["role based access control"],
+        "ids": ["intrusion detection system"],
+        "mfa": ["multi factor authentication", "multifactor authentication"],
+        "siem": ["security information event management", "security information and event management"],
+        "nat": ["network address translation"],
+        "ddos": ["distributed denial of service"],
+        "xss": ["cross site scripting", "cross-site scripting"],
+        "sql injection": ["sqli"],
+        "mitm": ["man in the middle", "man-in-the-middle"],
+        "rsa": ["rivest shamir adleman"],
+        "dsa": ["digital signature algorithm"],
+        "mac": ["mandatory access control", "message authentication code"],
+        "dac": ["discretionary access control"],
+        "abac": ["attribute based access control"],
+        "saml": ["security assertion markup language"],
+        "ldap": ["lightweight directory access protocol"],
+        "radius": ["remote authentication dial in user service"],
+        "tacacs": ["terminal access controller access control system"],
+        "nist": ["national institute of standards and technology"],
+        "hipaa": ["health insurance portability and accountability act"],
+        "sox": ["sarbanes oxley act", "sarbanes-oxley act"],
+        "pci dss": ["payment card industry data security standard"],
+        "gdpr": ["general data protection regulation"],
+        "fisma": ["federal information security management act"],
+        "casb": ["cloud access security broker"],
+        "soc": ["security operations center"],
+        "nac": ["network access control"],
+        "wpa3": ["wifi protected access 3", "wi-fi protected access 3"]
+      };
+      
+      // Check if the correct answer has variations
+      if (variations[correctAnswer]) {
+        return variations[correctAnswer].some(variation => 
+          userAnswer === variation || userAnswer.includes(variation) || variation.includes(userAnswer)
+        );
+      }
+      
+      // Check reverse - if user answer is an acronym
+      for (const [acronym, expansions] of Object.entries(variations)) {
+        if (userAnswer === acronym && expansions.includes(correctAnswer)) {
+          return true;
+        }
+      }
+      
+      return false;
+    }
+
+    function checkAnswer() {
+      if (answered) return;
+      
+      const userInput = document.getElementById("userAnswer").value.trim().toLowerCase();
+      const correctAnswer = flashcards[currentCard].answer.toLowerCase();
+      const feedback = document.getElementById("feedback");
+      const chico = document.getElementById("chico");
+      
+      totalAttempts++;
+      answered = true;
+
+      // Enhanced answer checking with more variations
+      const isCorrect = userInput === correctAnswer || 
+                       correctAnswer.includes(userInput) || 
+                       userInput.includes(correctAnswer) ||
+                       checkAnswerVariations(userInput, correctAnswer);
+
+      if (isCorrect) {
+        score++;
+        streak++;
+        feedback.innerHTML = `✅ Excellent! Chico is proud! 🐔<br><strong>Answer: ${flashcards[currentCard].answer}</strong>`;
+        feedback.className = "correct";
+        chico.classList.add("flap");
+        
+        if (streak % 5 === 0) {
+          showCelebration();
+        }
+      } else {
+        streak = 0;
+        feedback.innerHTML = `❌ Not quite, featherbrain! 🐔<br><strong>Correct answer: ${flashcards[currentCard].answer}</strong>`;
+        feedback.className = "incorrect";
+        chico.classList.add("shake");
+      }
+
+      updateStats();
+
+      setTimeout(() => {
+        chico.classList.remove("flap", "shake");
+        nextCard();
+      }, 3000);
+    }
+
+    function skipCard() {
+      if (answered) return;
+      
+      const feedback = document.getElementById("feedback");
+      feedback.innerHTML = `⏩ Skipped! The answer was: <strong>${flashcards[currentCard].answer}</strong>`;
+      feedback.className = "incorrect";
+      
+      answered = true;
+      totalAttempts++;
+      streak = 0;
+      updateStats();
+      
+      setTimeout(nextCard, 2000);
+    }
+
+    function nextCard() {
+      currentCard = (currentCard + 1) % flashcards.length;
+      
+      if (currentCard === 0) {
+        // Completed all cards, shuffle for next round
+        shuffleArray(flashcards);
+      }
+      
+      loadCard();
+    }
+
+    function loadCard() {
+      document.getElementById("question").textContent = flashcards[currentCard].question;
+      document.getElementById("userAnswer").value = "";
+      document.getElementById("feedback").innerHTML = "";
+      document.getElementById("feedback").className = "";
+      answered = false;
+      
+      // Focus on input field
+      document.getElementById("userAnswer").focus();
+    }
+
+    function danceChico() {
+      const chico = document.getElementById("chico");
+      chico.classList.add("dance");
+      setTimeout(() => chico.classList.remove("dance"), 1000);
+    }
+
+    function showCelebration() {
+      const celebration = document.getElementById("celebration");
+      celebration.classList.add("celebrate");
+      setTimeout(() => celebration.classList.remove("celebrate"), 1000);
+    }
+
+    // Allow Enter key to submit answer
+    document.getElementById("userAnswer").addEventListener("keypress", function(event) {
+      if (event.key === "Enter") {
+        checkAnswer();
+      }
+    });
+
+    // Initialize the game when page loads
+    window.onload = initGame;
+  </script>
+</body>
+</html>
